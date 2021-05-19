@@ -38,7 +38,7 @@ class SearchBar {
   final bool showClearButton;
 
   /// What the hintText on the search bar should be. Defaults to 'Search'.
-  final String hintText;
+  final Text? hintText;
 
   /// Whether search is currently active.
   final ValueNotifier<bool> isSearching = ValueNotifier(false);
@@ -60,7 +60,7 @@ class SearchBar {
     required this.buildDefaultAppBar,
     this.onSubmitted,
     TextEditingController? controller,
-    this.hintText = 'Search',
+    this.hintText,
     this.inBar = true,
     this.closeOnSubmit = true,
     this.clearOnSubmit = true,
@@ -103,7 +103,8 @@ class SearchBar {
   ///
   /// This adds a route that listens for onRemove (and stops the search when that happens), and then calls [setState] to rebuild and start the search.
   void beginSearch(context) {
-    ModalRoute.of(context)!.addLocalHistoryEntry(LocalHistoryEntry(onRemove: () {
+    ModalRoute.of(context)!
+        .addLocalHistoryEntry(LocalHistoryEntry(onRemove: () {
       setState(() {
         isSearching.value = false;
       });
@@ -148,12 +149,13 @@ class SearchBar {
           key: Key('SearchBarTextField'),
           keyboardType: keyboardType,
           decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: inBar
-                  ? null
-                  : TextStyle(
-                      color: theme.textTheme.headline4!.color,
-                    ),
+              hintText: hintText?.data ?? "Search",
+              hintStyle: hintText?.style ??
+                  (inBar
+                      ? null
+                      : TextStyle(
+                          color: theme.textTheme.headline4!.color,
+                        )),
               enabledBorder: InputBorder.none,
               focusedBorder: InputBorder.none,
               border: InputBorder.none),
